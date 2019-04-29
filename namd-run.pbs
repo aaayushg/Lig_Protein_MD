@@ -1,0 +1,20 @@
+#!/bin/bash
+
+#PBS -l procs=24
+#PBS -l walltime=240:00:00
+#PBS -q gpu_temp
+#PBS -N rpn
+
+# Load Modules
+module load tools/cuda-6.5
+module load apps/NAMD-2.12-verbs-smp-gcc-4.8.5-cuda-6.5
+
+cd $PBS_O_WORKDIR
+
+# Calculation
+namd2 +p 24 +devices 0,1,2,3 +idlepoll +isomalloc_sync mini.conf > rpn.log
+namd2 +p 24 +devices 0,1,2,3 +idlepoll +isomalloc_sync nvt.conf > rpn1.log
+namd2 +p 24 +devices 0,1,2,3 +idlepoll +isomalloc_sync npt.conf > rpn2.log
+namd2 +p 24 +devices 0,1,2,3 +idlepoll +isomalloc_sync production.conf > rpn3.log
+
+
